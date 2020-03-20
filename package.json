@@ -9,6 +9,8 @@
   "devDependencies": {
     "node-telegram-bot-api": "^0.40.0",
     "node-cron": "^2.0.3",
+    "request": "^2.88.2",
+    "socks5-https-client": "^1.2.1",
     "dotenv": "^8.2.0"
   },
   "keywords": [],
