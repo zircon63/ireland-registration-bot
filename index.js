@@ -17,7 +17,7 @@ const URL = 'https://www.vtb.ru/api/currency-exchange/table-info?contextItemId=%
 
 let users = [];
 let tasks = {};
-bot.onText(/\/show (\d)/, (msg, match) => {
+bot.onText(/\/show (\d+)/, (msg, match) => {
     const chatId = msg.chat.id;
     users.push(chatId);
     const minutes = match[1];
