@@ -6,8 +6,8 @@ const bot = new TelegramBot(process.env.TOKEN_BOT, {
     request: {
         agentClass: Agent,
         agentOptions: {
-            socksHost: '127.0.0.1',
-            socksPort: '9150'
+            socksHost: process.env.SOCKS_HOST,
+            socksPort: process.env.SOCKS_PORT
         }
     }
 });
