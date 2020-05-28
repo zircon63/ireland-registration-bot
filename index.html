@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Display Webcam Stream</title>
+
+    <style>
+        #container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+        }
+
+        canvas {
+            border: 1px solid crimson;
+        }
+    </style>
+    <script type="x-shader/x-vertex" id="VertexShader">
+        attribute vec4 a_Position;
+
+        void main()
+        {
+            gl_Position = a_Position;
+        }
+
+
+    </script>
+
+    <script type="x-shader/x-fragment" id="FragmentShader">
+        precision lowp float;
+
+        uniform sampler2D u_Sampler;
+        uniform sampler2D u_Mask;
+        uniform sampler2D u_Background;
+        uniform vec3 iResolution;
+
+        vec4 blur(sampler2D source, vec2 size, vec2 uv) {
+
+            vec4 C = vec4(0.0);
+
+            float width = 1.0 / size.x;
+            float height = 1.0 / size.y;
+
+            float divisor = 0.0;
+
+            for (float x = -42.0; x <= 42.0; x++)
+            {
+                C += texture2D(source, uv + vec2(x * width, 0.0));
+                C += texture2D(source, uv + vec2(0.0, x * height));
+                divisor++;
+            }
+            C*=0.5;
+
+            return vec4(C.r / divisor, C.g / divisor, C.b / divisor, 1.0);
+
+        }
+
+        void main()
+        {
+            vec2 uv = gl_FragCoord.xy / iResolution.xy;
+            vec4 videoColor = texture2D(u_Sampler, uv);
+            vec4 bluredMask = blur(u_Mask, iResolution.xy, uv);
+            vec4 backgroundColor = texture2D(u_Background, uv);
+            //vec4 bluredTex = blur(u_Sampler, iResolution.xy, uv);
+            gl_FragColor = mix(backgroundColor, videoColor, bluredMask.r);
+        }
+
+
+    </script>
+</head>
+
+<body>
+<h3 id="stats"></h3>
+<div id="container">
+    <canvas id="chromakey" width="640" height="480"></canvas>
+    <canvas id="webgl" width="640" height="480"></canvas>
+</div>
+<script src="./dist/bundle.js"></script>
+</body>
+</html>
